@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel
 import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 # Database setup
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://recipeuser:recipemaster@recipes-db:5432/recipesdb")
@@ -36,6 +38,10 @@ class RecipeModel(Base):
 # FastAPI app
 app = FastAPI(title="Recipes API", version="1.0.0")
 
+# Templates and static files
+templates = Jinja2Templates(directory="app/templates")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -46,22 +52,22 @@ def get_db():
 
 # Routes
 @app.get("/")
-async def root():
-    return {"message": "Welcome to Recipes API"}
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/recipes/")
+@app.get("/v1/recipes/")
 async def read_recipes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     recipes = db.query(RecipeModel).offset(skip).limit(limit).all()
     return recipes
 
-@app.get("/recipes/{recipe_id}")
+@app.get("/v1/recipes/{recipe_id}")
 async def read_recipe(recipe_id: int, db: Session = Depends(get_db)):
     recipe = db.query(RecipeModel).filter(RecipeModel.id == recipe_id).first()
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
     return recipe
 
-@app.post("/recipes/")
+@app.post("/v1/recipes/")
 async def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db)):
     db_recipe = RecipeModel(**recipe.model_dump())
     db.add(db_recipe)
@@ -69,7 +75,7 @@ async def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db)):
     db.refresh(db_recipe)
     return db_recipe
 
-@app.put("/recipes/{recipe_id}")
+@app.put("/v1/recipes/{recipe_id}")
 async def update_recipe(recipe_id: int, recipe: RecipeCreate, db: Session = Depends(get_db)):
     db_recipe = db.query(RecipeModel).filter(RecipeModel.id == recipe_id).first()
     if not db_recipe:
@@ -82,7 +88,7 @@ async def update_recipe(recipe_id: int, recipe: RecipeCreate, db: Session = Depe
     db.refresh(db_recipe)
     return db_recipe
 
-@app.delete("/recipes/{recipe_id}")
+@app.delete("/v1/recipes/{recipe_id}")
 async def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
     db_recipe = db.query(RecipeModel).filter(RecipeModel.id == recipe_id).first()
     if not db_recipe:

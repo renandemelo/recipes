@@ -17,7 +17,7 @@ spec:
       containers:
       - name: postgres
         image: recipes-db:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 5432
         env:

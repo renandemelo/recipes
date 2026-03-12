@@ -33,11 +33,13 @@ This is a sample application with two services:
   - `score`: integer rating for the recipe
 
 - **Web Application**: FastAPI REST API with CRUD operations:
-  - GET `/recipes/` - List all recipes
-  - GET `/recipes/{recipe_id}` - Get a specific recipe
-  - POST `/recipes/` - Create a new recipe
-  - PUT `/recipes/{recipe_id}` - Update an existing recipe
-  - DELETE `/recipes/{recipe_id}` - Delete a recipe
+  - GET `/v1/recipes/` - List all recipes
+  - GET `/v1/recipes/{recipe_id}` - Get a specific recipe
+  - POST `/v1/recipes/` - Create a new recipe
+  - PUT `/v1/recipes/{recipe_id}` - Update an existing recipe
+  - DELETE `/v1/recipes/{recipe_id}` - Delete a recipe
+
+- **Web Interface**: HTML CRUD application accessible at the root URL `/`
 
 ## Setup Instructions
 
@@ -69,6 +71,8 @@ The deployment script automatically handles building the Docker images and deplo
 
 ### Usage
 After deployment, you can access the API at `http://localhost/` (the webapp service is exposed on port 80).
+The HTML CRUD interface is available at the root URL `/`.
+The REST API is available under the `/v1/` prefix.
 
 ## Testing
 
@@ -76,23 +80,23 @@ You can test the API using curl or any HTTP client:
 
 ```bash
 # Get all recipes
-curl http://localhost:8080/recipes/
+curl http://localhost:8080/v1/recipes/
 
 # Create a new recipe
-curl -X POST "http://localhost:8080/recipes/" \
+curl -X POST "http://localhost:8080/v1/recipes/" \
   -H "Content-Type: application/json" \
   -d '{"description": "New Recipe", "score": 5}'
 
 # Get a specific recipe
-curl http://localhost:8080/recipes/1
+curl http://localhost:8080/v1/recipes/1
 
 # Update a recipe
-curl -X PUT "http://localhost:8080/recipes/1" \
+curl -X PUT "http://localhost:8080/v1/recipes/1" \
   -H "Content-Type: application/json" \
   -d '{"description": "Updated Recipe", "score": 4}'
 
 # Delete a recipe
-curl -X DELETE "http://localhost:8080/recipes/1"
+curl -X DELETE "http://localhost:8080/v1/recipes/1"
 ```
 
 ## Docker Images

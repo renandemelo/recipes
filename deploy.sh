@@ -23,7 +23,12 @@ echo "Loading images into k3s cluster..."
 sudo docker save recipes-db:latest | sudo k3s ctr images import -
 sudo docker save recipes-webapp:latest | sudo k3s ctr images import -
 
-# Apply Kubernetes manifests (they use imagePullPolicy: Never)
+# Delete existing pods to force image refresh
+echo "Deleting existing pods to force image refresh..."
+kubectl delete pod -l app=recipes-db --ignore-not-found
+kubectl delete pod -l app=recipes-webapp --ignore-not-found
+
+# Apply Kubernetes manifests (they use imagePullPolicy: IfNotPresent)
 kubectl apply -f k8s/recipes-db-deployment.yaml
 kubectl apply -f k8s/recipes-webapp-deployment.yaml
 kubectl apply -f k8s/recipes-webapp-ingress.yaml
