@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: recipes-db:latest
+        image: docker.io/library/recipes-db:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 5432
         env:

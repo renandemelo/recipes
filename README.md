@@ -55,7 +55,7 @@ This is a sample application with two services:
 
 2. Deploy the application:
    ```bash
-   ./deploy.sh
+   ./deploy_fixed.sh
    ```
 
 ### Usage
