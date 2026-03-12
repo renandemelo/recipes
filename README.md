@@ -55,8 +55,17 @@ This is a sample application with two services:
 
 2. Deploy the application:
    ```bash
-   ./deploy_fixed.sh
+   ./deploy.sh
    ```
+
+### Troubleshooting
+
+If you encounter issues with image deployment, such as `ErrImageNeverPull` errors, make sure that:
+1. You have run `./install.sh` to set up k3s properly
+2. The Docker images are built locally before deployment
+3. The Kubernetes manifests use `imagePullPolicy: IfNotPresent` instead of `Never`
+
+The deployment script automatically handles building the Docker images and deploying them to the k3s cluster.
 
 ### Usage
 After deployment, you can access the API at `http://localhost/` (the webapp service is exposed on port 80).
@@ -67,23 +76,23 @@ You can test the API using curl or any HTTP client:
 
 ```bash
 # Get all recipes
-curl http://localhost/recipes/
+curl http://localhost:8080/recipes/
 
 # Create a new recipe
-curl -X POST "http://localhost/recipes/" \
+curl -X POST "http://localhost:8080/recipes/" \
   -H "Content-Type: application/json" \
   -d '{"description": "New Recipe", "score": 5}'
 
 # Get a specific recipe
-curl http://localhost/recipes/1
+curl http://localhost:8080/recipes/1
 
 # Update a recipe
-curl -X PUT "http://localhost/recipes/1" \
+curl -X PUT "http://localhost:8080/recipes/1" \
   -H "Content-Type: application/json" \
   -d '{"description": "Updated Recipe", "score": 4}'
 
 # Delete a recipe
-curl -X DELETE "http://localhost/recipes/1"
+curl -X DELETE "http://localhost:8080/recipes/1"
 ```
 
 ## Docker Images

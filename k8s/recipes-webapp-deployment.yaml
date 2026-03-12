@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: docker.io/library/recipes-webapp:latest
-        imagePullPolicy: Never
+        image: recipes-webapp:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         env:
