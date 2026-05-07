@@ -20,8 +20,10 @@ echo "Deploying to k3s..."
 # Load images into k3s cluster using ctr (k3s containerd client)
 echo "Loading images into k3s cluster..."
 # Save the images as tar files and load them into k3s
-sudo docker save recipes-db:latest | sudo k3s ctr images import -
-sudo docker save recipes-webapp:latest | sudo k3s ctr images import -
+sudo docker save recipes-db:latest > /tmp/recipes-db.tar
+sudo k3s ctr images import /tmp/recipes-db.tar
+sudo docker save recipes-webapp:latest > /tmp/recipes-webapp.tar
+sudo k3s ctr images import /tmp/recipes-webapp.tar
 
 # Delete existing pods to force image refresh
 echo "Deleting existing pods to force image refresh..."

@@ -251,10 +251,6 @@
 
         // Delete a recipe
         async function deleteRecipe(id) {
-            if (!confirm('Are you sure you want to delete this recipe?')) {
-                return;
-            }
-            
             try {
                 const response = await fetch(`${API_BASE_URL}/recipes/${id}`, {
                     method: 'DELETE'
